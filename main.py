@@ -1,4 +1,6 @@
-
+from picamera.array import PiRGBArray
+import time
+from picamera import PiCamera
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot,Qt
 import cv2 as cv 
 from PyQt5.QtGui import QPixmap
@@ -16,19 +18,28 @@ class VideoThread(QThread):
         self._run_flag=True
         self.camera_index=camera_index
 
+
     def calibrate_camera(self):
         pass
 
     def run(self):
-        cap=cv.VideoCapture(self.camera_index)
-        while self._run_flag:
-            ret,frame=cap.read()
-            if ret:
-                # ret est un bool indiquant si la frame a ete bien recu
+        if self.camera_index !=0 :
+            cap=cv.VideoCapture(self.camera_index)
+
+            while self._run_flag:
+                ret,frame=cap.read()
+                if ret:
+                    # ret est un bool indiquant si la frame a ete bien recu
+                    self.change_pixmap_signal.emit(frame)
+                if not ret :
+                    print("Can't receive frame")
+            cap.release()
+        else :
+            cap=PiCamera()
+            raw_capture=PiRGBArray(cap,size=(640,480))
+            time.sleep(0.1)
+            for frame in cap.capture_continuous(raw_capture,format="bgr",use_video_port=True)
                 self.change_pixmap_signal.emit(frame)
-            if not ret :
-                print("Can't receive frame")
-        cap.release()
 
     def stop(self):
         """
@@ -108,7 +119,7 @@ class App(QWidget):
 
 
         #--------------------------------------------
-        # self.thread_infra = VideoThread(0)
+        self.thread_infra = VideoThread(2)
         self.thread_fisheye= VideoThread(0)
 
         #--------------------------------------------
@@ -116,7 +127,7 @@ class App(QWidget):
 
         # self.thread_infra.change_pixmap_signal.connect(self.update_infra_image)
         # self.thread_infra.start()
-        self.thread_fisheye.change_pixmap_signal.connect(self.update_fisheye_image_bis)
+        self.thread_fisheye.change_pixmap_signal.connect(self.update_fisheye_image)
         self.thread_fisheye.start()
 
     def closeEvent(self, event):

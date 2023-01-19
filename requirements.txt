@@ -1,2 +1,20 @@
 opencv-python
 pyqt5
+   32  pip install pyqt5
+   38  pip remove pyqt5
+   39  pip uninstall pyqt5
+   40  pip install PyQt5
+   43  pip install xcb
+   45  pip uninstall opencv-python
+   46  pip install opencv-python-headless
+   75  pip install pyuic5-tool
+   79  pip install pyuic5-tools
+   80  pip install pyuic5-tool
+   96  pip install astropy
+   98  pip install matplotlib
+  101  history | grep pip install
+  102  history | grep pip 
+  103  pip install ephem
+  105  pip install serial
+  107  pip install pandas
+  109  pip install scipy
