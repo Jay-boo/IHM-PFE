@@ -51,6 +51,11 @@ class VideoThread(QThread):
         self._run_flag=False
         self.wait()
 
+
+
+
+# TEMPORARY THREAD . NOT USED --------------
+
 class VideoThreadPiCamera(QThread):
     change_pixmap_signal=pyqtSignal(np.ndarray)# We will emit numpy.ndarray
     def __init__(self,camera_index=0):
@@ -88,6 +93,7 @@ class VideoThreadPiCamera(QThread):
         """
         self._run_flag=False
         self.wait()
+# -----------------------------------------------------------
 
 class App(QWidget):
     def __init__(self):
