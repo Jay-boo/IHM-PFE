@@ -165,9 +165,9 @@ class App(QWidget):
 
 
         #--------------------------------------------
-        self.thread_infra = VideoThread(1)
+        self.thread_infra = VideoThread(0)
         print("-----------vieoThreadPicamera creation")
-        self.thread_fisheye= VideoThread(0)
+        self.thread_fisheye= VideoThread(2)
         print("-----------")
 
         #--------------------------------------------
