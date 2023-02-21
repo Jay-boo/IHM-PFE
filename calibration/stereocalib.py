@@ -18,19 +18,21 @@ print(stereoMapR_x.shape)
 
 
 
-imagesFISH = sorted(glob.glob('../img_calib/img_fisheye/*.png'))
+imagesFISH = sorted(glob.glob('../undistort/fish/*.png'))
 imagesINFRA = sorted(glob.glob('../img_calib/img_infra/*.png'))
 
 i=0
 for imgLeft, imgRight in zip(imagesFISH, imagesINFRA):
     img = cv2.imread(imgLeft)
-    dst = cv2.remap(img,stereoMapL_x,stereoMapL_y,cv2.INTER_LINEAR)
+    dst = cv2.remap(img,stereoMapL_x,stereoMapL_y,cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT,0)
     cv2.imwrite(f'../test/fish/image_{i}.png',dst)
     cv2.imshow("frame fisheye",dst)
     img = cv2.imread(imgRight)
-    dst = cv2.remap(img,stereoMapR_x,stereoMapR_y,cv2.INTER_LINEAR)
+    dst = cv2.remap(img,stereoMapR_x,stereoMapR_y,cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT,0)
     cv2.imwrite(f'../test/infra/image_{i}.png',dst)
     cv2.imshow("frame infra",dst)
+    cv2.waitKey(1000)
     i+=1
+cv2.destroyAllWindows()
     
     

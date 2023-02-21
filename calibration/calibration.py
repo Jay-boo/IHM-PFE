@@ -112,37 +112,43 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
     # 2. Undistort Point
     undistorted_imgpointsL=[]
     for img_point in imgpointsL:
-        undistorted_imgpointsL.append(cv.fisheye.undistortPoints(img_point,final_K,D))
+        undistorted_imgpointsL.append(cv.fisheye.undistortPoints(img_point,K,D))
         
     undistorted_imgpointsR=[]
     for img_point in imgpointsR:
         undistorted_imgpointsR.append(cv.undistortPoints(img_point,newCameraMatrixR,distR))
 
+    counter=0
+    for imgLeft, imgRight in zip(imagesFISH, imagesINFRA):
+        img = cv.imread(imgLeft)
+        cv.imshow("frame fisheye",img)
+        map_1,map_2=cv.fisheye.initUndistortRectifyMap(K,D,np.eye(3),K,frameSize,cv.CV_16SC2)
+        undistorted_img=cv.remap(img,map_1,map_2,interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
+        cv.imshow("frame undistorted",undistorted_img)
+        cv.imwrite(f'../undistort/fish/image_{counter}.png',undistorted_img)
+
+        # img = cv.imread(imgRight)
+        # cv.imshow("frame Infra",img)
+        # map_1,map_2=cv.initUndistortRectifyMap(cameraMatrixR,distR,None,newCameraMatrixR,frameSize,cv.CV_32FC1)
+        # undistorted_img=cv.remap(img,map_1,map_2,interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
+        # cv.imshow("frame undistorted",undistorted_img)
+        # cv.imwrite(f'../undistort/infra/image_{counter}.png',undistorted_img)
+        cv.waitKey(1000)
+        counter+=1
+    cv.destroyAllWindows()
+
     #-------------------------------------------------------
     # 3. Estimate extrinsic parameters
 
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    flags =cv.CALIB_FIX_INTRINSIC
+    flags=0
+    flags |=cv.CALIB_FIX_INTRINSIC
 
     criteria_stereo= (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
     retStereo, cameraMatrixL, distL, newCameraMatrixR, distR, rot, trans, essentialMatrix, fundamentalMatrix = cv.stereoCalibrate(
     objpoints, 
     undistorted_imgpointsL,
-    undistorted_imgpointsR,
+        undistorted_imgpointsR,
     final_K,
     D,
     newCameraMatrixR,
@@ -155,12 +161,8 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
     print(f"rmse :{retStereo}")
     print(cameraMatrixL)
     print(cameraMatrixR)
-    # print(essentialMatrix,fundamentalMatrix)
     print("---------------")
-
     rectifyScale=1
-    
-
     rectL, rectR, projMatrixL, projMatrixR, Q, roi_L, roi_R= cv.stereoRectify(cameraMatrixL, distL, newCameraMatrixR, distR, grayL.shape[::-1], rot, trans, rectifyScale,(0,0))
 
     stereoMapL = cv.initUndistortRectifyMap(cameraMatrixL, distL, rectL, projMatrixL, grayL.shape[::-1], cv.CV_16SC2)
