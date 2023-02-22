@@ -1,8 +1,8 @@
-counter=10
-for file in img_calib/img_infra2/imageFISH*.png;
+counter=0
+for file in img_calib/img_fisheye2/imageFISH*.png;
   
   do
-     mv $file  "img_calib/img_infra/imageINF${counter}.png";
+     mv $file  "img_calib/img_fisheye2/imageFISH${counter}.png";
      ((counter=counter+1))
   done
   
