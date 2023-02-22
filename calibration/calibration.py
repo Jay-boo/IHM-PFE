@@ -6,14 +6,14 @@ import glob
 
 
 
-def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
+def calibrate_camera(chessboardSize=(8,6),img_calib_dir="img_calib/"):
     chessboardSize = (8,6)
     frameSize = (640,480)
     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     objp = np.zeros((1,chessboardSize[0] * chessboardSize[1], 3), np.float32)
     objp[0,:,:2] = np.mgrid[0:chessboardSize[0],0:chessboardSize[1]].T.reshape(-1,2)
 
-    size_of_chessboard_squares_mm = 20
+    size_of_chessboard_squares_mm = 22
     objp = objp * size_of_chessboard_squares_mm
 
     objpoints = [] # 3d point in real world space
@@ -22,6 +22,7 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
 
     imagesFISH = sorted(glob.glob(img_calib_dir+'img_fisheye/*.png'))
     imagesINFRA = sorted(glob.glob( img_calib_dir+'img_infra/*.png'))
+    print(imagesINFRA,imagesFISH)
 
     for imgLeft, imgRight in zip(imagesFISH, imagesINFRA):
 
@@ -100,11 +101,11 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
     print("FISHEYE MATRIX")
     print(f"rmse:{rms}")
     print(K)
-    print(D)
+    print(D,D.shape)
     print("INFRA MATRIX")
     print(f"rmse:{retR}")
     print(cameraMatrixR)
-    print(newCameraMatrixR.shape)
+    # print(newCameraMatrixR.shape,distR.shape)
     print("--------------------------------------")
 
 
@@ -118,63 +119,72 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="../img_calib/"):
     for img_point in imgpointsR:
         undistorted_imgpointsR.append(cv.undistortPoints(img_point,newCameraMatrixR,distR))
 
+
+
+
+
+
+
+
     #-------------------------------------------------------
     # 3. Estimate extrinsic parameters
 
 
 
-    
-
-
-
-
-
-
-
-
-
-
-
-    flags =cv.CALIB_FIX_INTRINSIC
-
+    flags=0
+    flags |=cv.CALIB_FIX_INTRINSIC
     criteria_stereo= (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    # print(distR.shape,D.shape)
 
     retStereo, cameraMatrixL, distL, newCameraMatrixR, distR, rot, trans, essentialMatrix, fundamentalMatrix = cv.stereoCalibrate(
-    objpoints, 
-    undistorted_imgpointsL,
-    undistorted_imgpointsR,
-    final_K,
-    D,
-    newCameraMatrixR,
-    distR,
-    grayL.shape[::-1], 
-    criteria_stereo,
-    flags)
+        objpoints, 
+        undistorted_imgpointsL,
+        imgpointsR,
+        K,
+        D,
+        newCameraMatrixR,
+        distR,
+        grayL.shape[::-1], 
+        criteria_stereo,
+        flags
+    )
+    print(distL.shape,distR.shape)
+    
 
     print("---------Stereo Camera Calibration-----------")
     print(f"rmse :{retStereo}")
-    print(cameraMatrixL)
-    print(cameraMatrixR)
+    print(cameraMatrixL.shape,distL.shape)
+    print(cameraMatrixR.shape,distR.shape)
+    # print(grayL.shape[::-1])
     # print(essentialMatrix,fundamentalMatrix)
     print("---------------")
 
+
     rectifyScale=1
-    
+    rectL, rectR, projMatrixL, projMatrixR, Q, roi_L, roi_R= cv.stereoRectify(
+        cameraMatrixL,
+        distL,
+        newCameraMatrixR,
+        distR,
+        grayL.shape[::-1],
+        rot, trans, rectifyScale,(0,0))
+    #
+    # stereoMapL = cv.fisheye.initUndistortRectifyMap(cameraMatrixL,distL, rectL, projMatrixL, grayL.shape[::-1], cv.CV_16SC2)
+    # stereoMapR = cv.initUndistortRectifyMap(newCameraMatrixR, distR, rectR, projMatrixR, grayR.shape[::-1], cv.CV_16SC2)
 
-    rectL, rectR, projMatrixL, projMatrixR, Q, roi_L, roi_R= cv.stereoRectify(cameraMatrixL, distL, newCameraMatrixR, distR, grayL.shape[::-1], rot, trans, rectifyScale,(0,0))
 
-    stereoMapL = cv.initUndistortRectifyMap(cameraMatrixL, distL, rectL, projMatrixL, grayL.shape[::-1], cv.CV_16SC2)
-    stereoMapR = cv.initUndistortRectifyMap(newCameraMatrixR, distR, rectR, projMatrixR, grayR.shape[::-1], cv.CV_16SC2)
+
+
+
 
     print("Saving parameters!")
-    cv_file = cv.FileStorage('stereoMap.xml', cv.FILE_STORAGE_WRITE)
-
-    cv_file.write('stereoMapL_x',stereoMapL[0])
-    cv_file.write('stereoMapL_y',stereoMapL[1])
-    cv_file.write('stereoMapR_x',stereoMapR[0])
-    cv_file.write('stereoMapR_y',stereoMapR[1])
-
-    cv_file.release()
+    # cv_file = cv.FileStorage('stereoMap.xml', cv.FILE_STORAGE_WRITE)
+    # cv_file.write('stereoMapL_x',stereoMapL[0])
+    # cv_file.write('stereoMapL_y',stereoMapL[1])
+    # cv_file.write('stereoMapR_x',stereoMapR[0])
+    # cv_file.write('stereoMapR_y',stereoMapR[1])
+    #
+    # cv_file.release()
 
 if __name__ == "__main__":
     
