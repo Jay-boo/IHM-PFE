@@ -20,8 +20,8 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="img_calib/"):
     imgpointsL = [] # 2d points in image plane.
     imgpointsR = [] # 2d points in image plane.
 
-    imagesFISH = sorted(glob.glob(img_calib_dir+'img_fisheye2/*.png'))
-    imagesINFRA = sorted(glob.glob( img_calib_dir+'img_infra2/*.png'))
+    imagesFISH = sorted(glob.glob(img_calib_dir+'img_fisheye/*.png'))
+    imagesINFRA = sorted(glob.glob( img_calib_dir+'img_infra/*.png'))
     print(imagesINFRA,imagesFISH)
 
     for imgLeft, imgRight in zip(imagesFISH, imagesINFRA):
@@ -139,7 +139,7 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="img_calib/"):
     retStereo, cameraMatrixL, distL, newCameraMatrixR, distR, rot, trans, essentialMatrix, fundamentalMatrix = cv.stereoCalibrate(
         objpoints, 
         undistorted_imgpointsL,
-        undistorted_imgpointsR,
+        imgpointsR,
         K,
         D,
         newCameraMatrixR,
