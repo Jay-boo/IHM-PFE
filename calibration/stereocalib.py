@@ -19,7 +19,7 @@ print(stereoMapR_x.shape)
 
 
 imagesFISH = sorted(glob.glob('../undistort/fish/*.png'))
-imagesINFRA = sorted(glob.glob('../img_calib/img_infra/*.png'))
+imagesINFRA = sorted(glob.glob('img_calib/img_infra/*.png'))
 
 i=0
 for imgLeft, imgRight in zip(imagesFISH, imagesINFRA):
