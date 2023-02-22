@@ -1,7 +1,7 @@
 import cv2
 
 cap = cv2.VideoCapture(0)#INFR
-cap2 = cv2.VideoCapture(2)
+cap2 = cv2.VideoCapture(1)
 
 num = 0
 
@@ -15,8 +15,8 @@ while cap.isOpened():
     if k == 27:
         break
     elif k == ord('s'): # wait for 's' key to save and exit
-        cv2.imwrite('img_calib/img_infra/imageINF' + str(num) + '.png', img)
-        cv2.imwrite('img_calib/img_fisheye/imageFISH'+ str(num) + '.png', img2)
+        cv2.imwrite('img_calib/img_infra2/imageINF' + str(num) + '.png', img)
+        cv2.imwrite('img_calib/img_fisheye2/imageFISH'+ str(num) + '.png', img2)
         print("images saved!")
         num += 1
 
