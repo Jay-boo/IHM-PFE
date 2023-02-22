@@ -27,7 +27,7 @@ imgpointsR = [] # 2d points in image plane.
 
 
 imagesLeft = sorted(glob.glob('../undistort/fish/*.png'))
-imagesRight = sorted(glob.glob('../img_calib/img_infra/*.png'))
+imagesRight = sorted(glob.glob('img_calib/img_infra/*.png'))
 
 for imgLeft, imgRight in zip(imagesLeft, imagesRight):
 
