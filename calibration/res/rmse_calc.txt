@@ -1,0 +1,209 @@
+['../undistort/fish/image_0.png', '../undistort/fish/image_1.png', '../undistort/fish/image_10.png', '../undistort/fish/image_11.png', '../undistort/fish/image_12.png', '../undistort/fish/image_13.png', '../undistort/fish/image_14.png', '../undistort/fish/image_15.png', '../undistort/fish/image_16.png', '../undistort/fish/image_17.png', '../undistort/fish/image_18.png', '../undistort/fish/image_19.png', '../undistort/fish/image_2.png', '../undistort/fish/image_20.png', '../undistort/fish/image_21.png', '../undistort/fish/image_22.png', '../undistort/fish/image_23.png', '../undistort/fish/image_24.png', '../undistort/fish/image_25.png', '../undistort/fish/image_26.png', '../undistort/fish/image_27.png', '../undistort/fish/image_28.png', '../undistort/fish/image_29.png', '../undistort/fish/image_3.png', '../undistort/fish/image_30.png', '../undistort/fish/image_31.png', '../undistort/fish/image_32.png', '../undistort/fish/image_33.png', '../undistort/fish/image_34.png', '../undistort/fish/image_35.png', '../undistort/fish/image_36.png', '../undistort/fish/image_37.png', '../undistort/fish/image_38.png', '../undistort/fish/image_39.png', '../undistort/fish/image_4.png', '../undistort/fish/image_40.png', '../undistort/fish/image_41.png', '../undistort/fish/image_42.png', '../undistort/fish/image_43.png', '../undistort/fish/image_44.png', '../undistort/fish/image_45.png', '../undistort/fish/image_46.png', '../undistort/fish/image_47.png', '../undistort/fish/image_48.png', '../undistort/fish/image_49.png', '../undistort/fish/image_5.png', '../undistort/fish/image_50.png', '../undistort/fish/image_51.png', '../undistort/fish/image_52.png', '../undistort/fish/image_53.png', '../undistort/fish/image_54.png', '../undistort/fish/image_6.png', '../undistort/fish/image_7.png', '../undistort/fish/image_8.png', '../undistort/fish/image_9.png']
+['img_calib/img_infra/imageINF0.png', 'img_calib/img_infra/imageINF1.png', 'img_calib/img_infra/imageINF10.png', 'img_calib/img_infra/imageINF11.png', 'img_calib/img_infra/imageINF12.png', 'img_calib/img_infra/imageINF13.png', 'img_calib/img_infra/imageINF14.png', 'img_calib/img_infra/imageINF15.png', 'img_calib/img_infra/imageINF16.png', 'img_calib/img_infra/imageINF17.png', 'img_calib/img_infra/imageINF18.png', 'img_calib/img_infra/imageINF19.png', 'img_calib/img_infra/imageINF2.png', 'img_calib/img_infra/imageINF20.png', 'img_calib/img_infra/imageINF21.png', 'img_calib/img_infra/imageINF22.png', 'img_calib/img_infra/imageINF23.png', 'img_calib/img_infra/imageINF24.png', 'img_calib/img_infra/imageINF25.png', 'img_calib/img_infra/imageINF26.png', 'img_calib/img_infra/imageINF27.png', 'img_calib/img_infra/imageINF28.png', 'img_calib/img_infra/imageINF29.png', 'img_calib/img_infra/imageINF3.png', 'img_calib/img_infra/imageINF30.png', 'img_calib/img_infra/imageINF31.png', 'img_calib/img_infra/imageINF32.png', 'img_calib/img_infra/imageINF33.png', 'img_calib/img_infra/imageINF34.png', 'img_calib/img_infra/imageINF35.png', 'img_calib/img_infra/imageINF36.png', 'img_calib/img_infra/imageINF37.png', 'img_calib/img_infra/imageINF38.png', 'img_calib/img_infra/imageINF39.png', 'img_calib/img_infra/imageINF4.png', 'img_calib/img_infra/imageINF40.png', 'img_calib/img_infra/imageINF41.png', 'img_calib/img_infra/imageINF42.png', 'img_calib/img_infra/imageINF43.png', 'img_calib/img_infra/imageINF44.png', 'img_calib/img_infra/imageINF45.png', 'img_calib/img_infra/imageINF46.png', 'img_calib/img_infra/imageINF47.png', 'img_calib/img_infra/imageINF48.png', 'img_calib/img_infra/imageINF49.png', 'img_calib/img_infra/imageINF5.png', 'img_calib/img_infra/imageINF50.png', 'img_calib/img_infra/imageINF51.png', 'img_calib/img_infra/imageINF52.png', 'img_calib/img_infra/imageINF53.png', 'img_calib/img_infra/imageINF54.png', 'img_calib/img_infra/imageINF6.png', 'img_calib/img_infra/imageINF7.png', 'img_calib/img_infra/imageINF8.png', 'img_calib/img_infra/imageINF9.png']
+NOt ok retL and retR
+../undistort/fish/image_10.png img_calib/img_infra/imageINF10.png
+NOt ok retL and retR
+../undistort/fish/image_11.png img_calib/img_infra/imageINF11.png
+NOt ok retL and retR
+../undistort/fish/image_17.png img_calib/img_infra/imageINF17.png
+NOt ok retL and retR
+../undistort/fish/image_19.png img_calib/img_infra/imageINF19.png
+NOt ok retL and retR
+../undistort/fish/image_20.png img_calib/img_infra/imageINF20.png
+NOt ok retL and retR
+../undistort/fish/image_24.png img_calib/img_infra/imageINF24.png
+NOt ok retL and retR
+../undistort/fish/image_25.png img_calib/img_infra/imageINF25.png
+NOt ok retL and retR
+../undistort/fish/image_27.png img_calib/img_infra/imageINF27.png
+NOt ok retL and retR
+../undistort/fish/image_28.png img_calib/img_infra/imageINF28.png
+NOt ok retL and retR
+../undistort/fish/image_29.png img_calib/img_infra/imageINF29.png
+NOt ok retL and retR
+../undistort/fish/image_31.png img_calib/img_infra/imageINF31.png
+NOt ok retL and retR
+../undistort/fish/image_32.png img_calib/img_infra/imageINF32.png
+NOt ok retL and retR
+../undistort/fish/image_33.png img_calib/img_infra/imageINF33.png
+NOt ok retL and retR
+../undistort/fish/image_35.png img_calib/img_infra/imageINF35.png
+NOt ok retL and retR
+../undistort/fish/image_36.png img_calib/img_infra/imageINF36.png
+NOt ok retL and retR
+../undistort/fish/image_37.png img_calib/img_infra/imageINF37.png
+NOt ok retL and retR
+../undistort/fish/image_39.png img_calib/img_infra/imageINF39.png
+NOt ok retL and retR
+../undistort/fish/image_41.png img_calib/img_infra/imageINF41.png
+NOt ok retL and retR
+../undistort/fish/image_42.png img_calib/img_infra/imageINF42.png
+NOt ok retL and retR
+../undistort/fish/image_44.png img_calib/img_infra/imageINF44.png
+NOt ok retL and retR
+../undistort/fish/image_46.png img_calib/img_infra/imageINF46.png
+NOt ok retL and retR
+../undistort/fish/image_47.png img_calib/img_infra/imageINF47.png
+NOt ok retL and retR
+../undistort/fish/image_48.png img_calib/img_infra/imageINF48.png
+NOt ok retL and retR
+../undistort/fish/image_5.png img_calib/img_infra/imageINF5.png
+NOt ok retL and retR
+../undistort/fish/image_51.png img_calib/img_infra/imageINF51.png
+NOt ok retL and retR
+../undistort/fish/image_53.png img_calib/img_infra/imageINF53.png
+29
+-------------------individual cam calib
+FISHEYE
+0.6653482143619514
+INFRA
+1.0474628153305119
+-------------------- 0 ----------
+fisheye reprojection error
+143.42984870664077
+infra reprojection error
+6.815374
+-------------------- 1 ----------
+fisheye reprojection error
+391.02362336055376
+infra reprojection error
+25.20802
+-------------------- 2 ----------
+fisheye reprojection error
+53.664842322061304
+infra reprojection error
+116.238464
+-------------------- 3 ----------
+fisheye reprojection error
+627.1283603562042
+infra reprojection error
+15.4537115
+-------------------- 4 ----------
+fisheye reprojection error
+682.5967569188215
+infra reprojection error
+14.61782
+-------------------- 5 ----------
+fisheye reprojection error
+417.77896027453244
+infra reprojection error
+13.6016655
+-------------------- 6 ----------
+fisheye reprojection error
+453.9666872029193
+infra reprojection error
+12.529784
+-------------------- 7 ----------
+fisheye reprojection error
+273.2958021000959
+infra reprojection error
+7.893401
+-------------------- 8 ----------
+fisheye reprojection error
+1589.4064045556006
+infra reprojection error
+22.696062
+-------------------- 9 ----------
+fisheye reprojection error
+365.61075355275534
+infra reprojection error
+15.738822
+-------------------- 10 ----------
+fisheye reprojection error
+269.700693753839
+infra reprojection error
+19.92323
+-------------------- 11 ----------
+fisheye reprojection error
+92.50890829693526
+infra reprojection error
+194.68846
+-------------------- 12 ----------
+fisheye reprojection error
+132.2100702993339
+infra reprojection error
+106.72966
+-------------------- 13 ----------
+fisheye reprojection error
+2309.065534368856
+infra reprojection error
+475.4414
+-------------------- 14 ----------
+fisheye reprojection error
+224.38077074213652
+infra reprojection error
+115.754196
+-------------------- 15 ----------
+fisheye reprojection error
+344.92950844817096
+infra reprojection error
+39.02057
+-------------------- 16 ----------
+fisheye reprojection error
+92.29828391522824
+infra reprojection error
+8.797558
+-------------------- 17 ----------
+fisheye reprojection error
+76.30886210297467
+infra reprojection error
+8.869327
+-------------------- 18 ----------
+fisheye reprojection error
+73.6939184369403
+infra reprojection error
+7.641078
+-------------------- 19 ----------
+fisheye reprojection error
+118.65642101573758
+infra reprojection error
+14.541594
+-------------------- 20 ----------
+fisheye reprojection error
+32.148100213409634
+infra reprojection error
+18.949276
+-------------------- 21 ----------
+fisheye reprojection error
+63.29352140062838
+infra reprojection error
+18.764084
+-------------------- 22 ----------
+fisheye reprojection error
+71.75664646565565
+infra reprojection error
+9.272725
+-------------------- 23 ----------
+fisheye reprojection error
+92.06480039018788
+infra reprojection error
+8.872602
+-------------------- 24 ----------
+fisheye reprojection error
+815.4655394677538
+infra reprojection error
+15.719943
+-------------------- 25 ----------
+fisheye reprojection error
+367.1635697509628
+infra reprojection error
+18.763214
+-------------------- 26 ----------
+fisheye reprojection error
+330.339845966897
+infra reprojection error
+167.70535
+-------------------- 27 ----------
+fisheye reprojection error
+341.1687294684816
+infra reprojection error
+85.15454
+-------------------- 28 ----------
+fisheye reprojection error
+309.3972321264446
+infra reprojection error
+76.03969
+custom stereo calibration rmse :2.1455559711349883
+2.1455559711349883
+built in sterroCalibration rmse : 50.8394444835497
+Saving parameters!
