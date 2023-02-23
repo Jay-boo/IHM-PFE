@@ -183,8 +183,8 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="img_calib/"):
     # cv_file.write('stereoMapL_y',stereoMapL[1])
     # cv_file.write('stereoMapR_x',stereoMapR[0])
     # cv_file.write('stereoMapR_y',stereoMapR[1])
-    #
-    # cv_file.release()
+    
+    cv_file.release()
 
 if __name__ == "__main__":
     
