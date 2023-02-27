@@ -115,7 +115,7 @@ def calc_rms_stereo(objectpoints, imgpoints_l, imgpoints_r, A1, D1, A2, D2, R, T
 
         # compute reprojection error for cam1
         rp_l, _ = cv.projectPoints(objpoints, rvec_l, tvec_l, A1, D1)
-        print("fisheye reprojection error square")
+        print("fisheye reprojection error")
         print(np.sum(np.square(np.float64(imgpoints_l[i] - rp_l))))
         tot_error += np.sum(np.square(np.float64(imgpoints_l[i] - rp_l)))
         total_points += len(objpoints)
