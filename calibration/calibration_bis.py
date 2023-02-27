@@ -30,6 +30,7 @@ imagesLeft = sorted(glob.glob('../undistort/fish/*.png'))
 imagesRight = sorted(glob.glob('img_calib/img_infra/*.png'))
 print(imagesLeft)
 print(imagesRight)
+print(f" Number of base images :{len(imagesLeft)}")
 
 counter=0
 for imgLeft, imgRight in zip(imagesLeft, imagesRight):
@@ -73,9 +74,9 @@ cv.destroyAllWindows()
 
 
 
+print(f" Number of used images :{len(objpoints)}")
 
 ############## CALIBRATION #######################################################
-print(len(objpoints))
 
 retL, cameraMatrixL, distL, rvecsL, tvecsL = cv.calibrateCamera(objpoints, imgpointsL, frameSize, None, None)
 heightL, widthL, channelsL = imgL.shape
@@ -89,6 +90,10 @@ print("FISHEYE")
 print(retL)
 print("INFRA")
 print(retR)
+
+
+print("--------------------Stereo Calibration")
+
 ########## Stereo Vision Calibration #############################################
 
 flags = 0
@@ -110,7 +115,7 @@ def calc_rms_stereo(objectpoints, imgpoints_l, imgpoints_r, A1, D1, A2, D2, R, T
 
         # compute reprojection error for cam1
         rp_l, _ = cv.projectPoints(objpoints, rvec_l, tvec_l, A1, D1)
-        print("fisheye reprojection error")
+        print("fisheye reprojection error square")
         print(np.sum(np.square(np.float64(imgpoints_l[i] - rp_l))))
         tot_error += np.sum(np.square(np.float64(imgpoints_l[i] - rp_l)))
         total_points += len(objpoints)
@@ -122,7 +127,7 @@ def calc_rms_stereo(objectpoints, imgpoints_l, imgpoints_r, A1, D1, A2, D2, R, T
         # compute reprojection error for cam2
         rp_r,_ = cv.projectPoints(objpoints, rvec_r, tvec_r, A2, D2)
         tot_error += np.square(imgpoints_r[i] - rp_r).sum()
-        print("infra reprojection error")
+        print("infra reprojection error square")
         print(np.square(imgpoints_r[i] - rp_r).sum())
         total_points += len(objpoints)
 
@@ -144,7 +149,6 @@ res_1=calc_rms_stereo(
 
 
 print(f"custom stereo calibration rmse :{res_1}")
-print(res_1)
 print(f"built in sterroCalibration rmse : {retStereo}")
 
 
