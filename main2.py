@@ -53,15 +53,15 @@ class MainWindow(QWidget):
         self.timer.timeout.connect(self.update)
         self.timer.start(10)
 
-        self.cap1 = cv2.VideoCapture(2) # FISH
-        self.cap2 = cv2.VideoCapture(0)
+        self.cap1 = cv2.VideoCapture(0) # FISH
+        self.cap2 = cv2.VideoCapture(1)
 
 
     def update(self):
         ret1, frame1 = self.cap1.read()
         if ret1:
             # Display the video flux
-            frame1 = cv2.cvtColor(frame1, self.colorfish)
+            # frame1 = cv2.cvtColor(frame1, self.colorfish)
             rgbImage1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
             h1, w1, ch1 = rgbImage1.shape
             bytesPerLine1 = ch1 * w1
@@ -84,14 +84,14 @@ class MainWindow(QWidget):
         ret1, img = self.cap1.read()
         ret2, img2 = self.cap2.read() 
         if ret1 and ret2:
-            cv2.imwrite('calibration/img_calib/img_fisheye3/imageINF' + str(self.num) + '.png', img)
-            cv2.imwrite('calibration/img_calib/img_infra3/imageFISH'+ str(self.num) + '.png', img2)
+            cv2.imwrite('calibration/img_calib/img_fisheye4/imageFISH' + str(self.num) + '.png', img)
+            cv2.imwrite('calibration/img_calib/img_infra4/imageINF'+ str(self.num) + '.png', img2)
             print("images saved!")
             self.num +=1
             
     def clean_file(self):
-        cleanfile('calibration/img_calib/img_fisheye3/')
-        cleanfile('calibration/img_calib/img_infra3/')
+        cleanfile('calibration/img_calib/img_fisheye4/')
+        cleanfile('calibration/img_calib/img_infra4/')
         
     def mono(self):
         if self.colorfish == cv2.COLOR_BGR2GRAY:
