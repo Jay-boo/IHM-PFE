@@ -1,9 +1,10 @@
 import numpy as np
 import cv2 as cv
 import glob
-
+from undistort import undistort
 
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
+
 
 chessboardSize = (8,6)
 frameSize = (640,480)
@@ -26,19 +27,28 @@ imgpointsL = [] # 2d points in image plane.
 imgpointsR = [] # 2d points in image plane.
 
 
-imagesLeft = sorted(glob.glob('../undistort/fish/*.png'))
-imagesRight = sorted(glob.glob('img_calib/img_infra/*.png'))
+imagesRight = sorted(glob.glob('img_calib/others/img_fisheye/*.png'))
+imagesLeft = sorted(glob.glob('img_calib/others/img_infra/*.png'))
+
+
+
 print(imagesLeft)
 print(imagesRight)
+assert(len(imagesLeft)== len(imagesRight))
 print(f" Number of base images :{len(imagesLeft)}")
 
 counter=0
 for imgLeft, imgRight in zip(imagesLeft, imagesRight):
 
-    imgL = cv.imread(imgLeft)
-    imgR = cv.imread(imgRight)
-    grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
+   
+    imgLe= cv.imread(imgRight)
+    imgL = undistort(imgLe)
+    
+    img = cv.imread(imgLeft)
+    imgR = cv.rotate(img, cv.ROTATE_180)
+
     grayR = cv.cvtColor(imgR, cv.COLOR_BGR2GRAY)
+    grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
 
     # Find the chess board corners
     retL, cornersL = cv.findChessboardCorners(grayL, chessboardSize, None)
@@ -63,7 +73,7 @@ for imgLeft, imgRight in zip(imagesLeft, imagesRight):
         cv.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
         cv.imshow('img right', imgR)
         cv.imwrite(f'draw/infra/imgINF{counter}.png',imgR)
-        cv.waitKey(1000)
+        cv.waitKey(200)
         counter+=1
     # else:
     #     print("NOt ok retL and retR")
@@ -168,7 +178,11 @@ cv_file.write('stereoMapL_x',stereoMapL[0])
 cv_file.write('stereoMapL_y',stereoMapL[1])
 cv_file.write('stereoMapR_x',stereoMapR[0])
 cv_file.write('stereoMapR_y',stereoMapR[1])
+
+cv_file.write('K1',newCameraMatrixL)
+cv_file.write('D1',distL)
+cv_file.write('K2',newCameraMatrixR)
+cv_file.write('D2',distR)
+cv_file.write('R',rot)
+cv_file.write('T',trans)
 cv_file.release()
-
-
-
