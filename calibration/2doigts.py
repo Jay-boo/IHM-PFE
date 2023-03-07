@@ -4,10 +4,10 @@ import numpy as np
 
 cv_file = cv2.FileStorage()
 cv_file.open('stereoMap.xml', cv2.FileStorage_READ)
-K_webcam = cv_file.getNode('K2').mat()
-D_webcam  = cv_file.getNode('D2').mat()
-K_fisheye = cv_file.getNode('K1').mat()
-D_fisheye = cv_file.getNode('D1').mat()
+K_webcam = cv_file.getNode('K1').mat()
+D_webcam  = cv_file.getNode('D1').mat()
+K_fisheye = cv_file.getNode('K2').mat()
+D_fisheye = cv_file.getNode('D2').mat()
 T = cv_file.getNode('T').mat()
 R = cv_file.getNode('R').mat()
 
@@ -63,7 +63,7 @@ for elem in listpoint:
     cv2.circle(img_fisheye, (int(elem[0]),int(elem[1])), 5, (0, 255, 0), -1)
 
 img_infra = cv2.imread('img_calib/img_infra4/imageINF0.png')
-
+img_infra= cv2.rotate(img_infra,cv2.ROTATE_180)
 cv2.imshow('Fisheye Camera', img_fisheye)
 cv2.imshow('Infra Camera',img_infra)
 cv2.waitKey(0)

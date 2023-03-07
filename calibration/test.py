@@ -34,7 +34,6 @@ def project_point(point_2d, camera1_matrix, camera1_dist_coeffs, camera2_matrix,
 
 
     # Convert the point to homogeneous coordinates
-    print(point_2d_undistorted[0])
     point_2d_homogeneous = np.hstack((point_2d_undistorted[0], np.array([[1]])))
 
     # Calculate the 3D point in camera coordinates using camera1's extrinsic matrix

@@ -34,19 +34,24 @@ imagesLeft = sorted(glob.glob('img_calib/img_infra/*.png'))
 imagesRight += sorted(glob.glob('img_calib/img_fisheye2/*.png'))
 imagesLeft += sorted(glob.glob('img_calib/img_infra2/*.png'))
 
+
+#imagesRight += sorted(glob.glob('img_calib/img_fisheye2/*.png'))
+#imagesLeft += sorted(glob.glob('img_calib/img_infra2/*.png'))
+
 print(imagesLeft)
 print(imagesRight)
 print(f" Number of base images :{len(imagesLeft)}")
 
 counter=0
+i=0
 for imgLeft, imgRight in zip(imagesLeft, imagesRight):
 
    
-    imgLe= cv.imread(imgRight)
-    imgL = undistort(imgLe)
+    imgRight= cv.imread(imgRight)
+    imgR = undistort(imgRight)
     
-    img = cv.imread(imgLeft)
-    imgR = cv.rotate(img, cv.ROTATE_180)
+    imgLeft = cv.imread(imgLeft)
+    imgL = cv.rotate(imgLeft, cv.ROTATE_180)
 
     grayR = cv.cvtColor(imgR, cv.COLOR_BGR2GRAY)
     grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
@@ -56,7 +61,9 @@ for imgLeft, imgRight in zip(imagesLeft, imagesRight):
     retR, cornersR = cv.findChessboardCorners(grayR, chessboardSize, None)
 
     # If found, add object points, image points (after refining them)
-    if retL and retR == True:
+
+    manual_remove = [21,23,33,38,39,40,45,49,52,70,81,85,86,87,97]
+    if retL and retR == True and i not in manual_remove:
 
 
         objpoints.append(objp)
@@ -68,14 +75,15 @@ for imgLeft, imgRight in zip(imagesLeft, imagesRight):
         imgpointsR.append(cornersR)
 
         # Draw and display the corners
-        cv.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
-        cv.imshow('fisheye', imgL)
-        cv.imwrite(f'draw/fish/imgFISH{counter}.png',imgL)
-        cv.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
-        cv.imshow('img right', imgR)
-        cv.imwrite(f'draw/infra/imgINF{counter}.png',imgR)
-        cv.waitKey(200)
+        # cv.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
+        # cv.imshow('Infra', imgL)
+        # cv.imwrite(f'draw/fish/imgFISH{counter}.png',imgL)
+        # cv.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
+        # cv.imshow('Fish', imgR)
+        # cv.imwrite(f'draw/infra/imgINF{counter}.png',imgR)
+        # cv.waitKey(50)
         counter+=1
+    i+=1
     # else:
     #     print("NOt ok retL and retR")
     #     print(imgLeft,imgRight)
@@ -186,5 +194,34 @@ cv_file.write('K2',newCameraMatrixR)
 cv_file.write('D2',distR)
 cv_file.write('R',rot)
 cv_file.write('T',trans)
+cv_file.write('Q',Q)
+cv_file.write('cameraMatrixR',cameraMatrixR)
+cv_file.write('distR',distR)
 cv_file.release()
 
+
+
+# perform stereo rectification
+
+# find the corners in the left image
+imgLeft = cv.imread('img_calib/img_infra4/imageINF0.png')
+imgL = cv.rotate(imgLeft, cv.ROTATE_180)
+grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
+retL, cornersL = cv.findChessboardCorners(grayL, chessboardSize, None)
+cornersL = cv.cornerSubPix(grayL, cornersL, (11,11), (-1,-1), criteria)
+
+# obtain the 3D coordinates of the corners in the left image
+cornersL_3D = cv.reprojectImageTo3D(grayL, Q)
+
+# project the 3D points onto the right image
+cornersL_3D = cornersL_3D.reshape(-1, 3)
+cornersR_2D, _ = cv.projectPoints(cornersL_3D, np.zeros((3, 1)), np.zeros((3, 1)), cameraMatrixR, distR)
+
+# draw the corners in the right image
+imgRight = cv.imread('img_calib/img_fisheye4/imageFISH0.png')
+imgR = undistort(imgRight)
+for corner in cornersR_2D:
+    x, y = corner.ravel()
+    cv.circle(imgR, (int(x), int(y)), 5, (0, 0, 255), -1)
+cv.imshow('Right', imgR)
+cv.waitKey(0)
