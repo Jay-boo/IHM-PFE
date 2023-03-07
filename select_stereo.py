@@ -64,9 +64,6 @@ class StereoWindow(QWidget):
         self.timer.timeout.connect(self.update)
         self.timer.start(10)
 
-        self.cap1 = cv2.VideoCapture(0) # FISH
-        self.cap2 = cv2.VideoCapture(1)
-
 
     def update(self):
         frame1 = cv2.imread(self.imagesRight[self.num])
