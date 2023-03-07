@@ -4,18 +4,14 @@ import os
 import glob
 
 
-
-
-
-
 def undistort(img,DIM=None,K=None,D=None, balance=0.0, dim2=None, dim3=None,see_result=False):   
     if DIM==None:
         try:
             cv_file = cv2.FileStorage()
-            cv_file.open('res/fishEyeCalib.xml', cv2.FileStorage_READ)
+            cv_file.open('calibration/res/fishEyeCalib.xml', cv2.FileStorage_READ)
             DIM = cv_file.getNode('frameSize').mat()
-            K = cv_file.getNode('K_L').mat()
-            D = cv_file.getNode('distL').mat()
+            K = cv_file.getNode('K_fish').mat()
+            D = cv_file.getNode('dist_fish').mat()
         except:
             pass
     dim1 = img.shape[:2][::-1]  #dim1 is the dimension of input image to un-distort    assert dim1[0]/dim1[1] == DIM[0]/DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"    
