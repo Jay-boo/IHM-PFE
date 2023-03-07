@@ -43,9 +43,13 @@ corners= getcorners(cornersR_2D)
 # draw the corners in the right image
 imgRight = cv.imread('img_calib/img_fisheye4/imageFISH0.png')
 imgR = undistort(imgRight)
+overlay=imgR.copy()
 for corner in cornersR_2D:
     x, y = corner.ravel()
-    cv.circle(imgR, (int(x), int(y)), 5, (0, 0, 255), -1)
-cv.imshow('Right', imgR)
+    cv.circle(overlay, (int(x), int(y)), 5, (0, 0, 255), -1)
+
+alpha = 0.4  # Transparency factor.
+image_new = cv.addWeighted(overlay, alpha, imgR, 1 - alpha, 0)
+cv.imshow('Right', image_new)
 cv.imshow('Left', imgL)
 cv.waitKey(0)
