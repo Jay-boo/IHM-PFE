@@ -3,42 +3,69 @@ import cv2
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer
-from utils import cleanfile
+from utils import cleanfile,delete_pic
+from calibration.undistort import undistort
+from calibration.project_image import project_image
+from calibration.calibration_stereo import calibrate_camera
+from calibration.calib_fish import calib_fish
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-        self.num = 0
-        self.colorfish=cv2.COLOR_BGR2RGB
+        self.num_stereo = 0
+        self.num_fish = 0
+        self.undist=False
+        self.seeresult=False
+        self.opacity = 0.4
+
 
     def initUI(self):
         # Create a layout for the buttons on the left
         vbox1 = QVBoxLayout()
-        button0 = QPushButton('Clean Picture file')
-        button0.clicked.connect(self.clean_file)
-        button1 = QPushButton('Take Picture')
-        button1.clicked.connect(self.capture_images)
-        button2 = QPushButton('Button 2')
-        button2.clicked.connect(self.mono)
-        button3 = QPushButton('Button 3')
-        button4 = QPushButton('Button 4')
-        button5 = QPushButton('Button 5')
+        button0 = QPushButton('Fish - Clean Pictures file')
+        button0.clicked.connect(self.clean_file_fish)
+        button1 = QPushButton('Fish - Take Picture')
+        button1.clicked.connect(self.capture_image_fish)
+        button2 = QPushButton('Fish - Select images')
+        button2.clicked.connect(self.select_fish)
+        button3 = QPushButton('Fish - Execute calibration')
+        button3.clicked.connect(self.exec_fishcalib)
+        button4 = QPushButton('Fish - Undistort video')
+        button4.clicked.connect(self.see_unidst)
+
+
+        button5 = QPushButton('Stereo - Clean Pictures files')
+        button5.clicked.connect(self.clean_file_stereo)
+        button6 = QPushButton('Stereo - Take Pictures')
+        button6.clicked.connect(self.capture_images)
+        button7 = QPushButton('Stereo - Select images')
+        button7.clicked.connect(self.select_stereo)
+        button8 = QPushButton('Stereo - Execute stereo calibration')
+        button8.clicked.connect(self.exec_stereocalib)
+        button9 = QPushButton('Stereo - See result')
+        button9.clicked.connect(self.see_result)
+
         vbox1.addWidget(button0)
         vbox1.addWidget(button1)
         vbox1.addWidget(button2)
         vbox1.addWidget(button3)
         vbox1.addWidget(button4)
+
         vbox1.addWidget(button5)
+        vbox1.addWidget(button6)
+        vbox1.addWidget(button7)
+        vbox1.addWidget(button8)
+        vbox1.addWidget(button9)
+
 
         # Create a layout for the video flux spaces
         hbox2 = QHBoxLayout()
         self.label1 = QLabel(self)
         self.label2 = QLabel(self)
-        self.label3 = QLabel(self)
         hbox2.addWidget(self.label1)
         hbox2.addWidget(self.label2)
-        hbox2.addWidget(self.label3)
+
 
         # Create a layout to combine the buttons and video flux spaces
         hbox1 = QHBoxLayout()
@@ -47,7 +74,7 @@ class MainWindow(QWidget):
 
         self.setLayout(hbox1)
         self.setGeometry(100, 100, 800, 600)
-        self.setWindowTitle('PyQt with OpenCV video flux spaces')
+        self.setWindowTitle('App')
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update)
@@ -59,9 +86,15 @@ class MainWindow(QWidget):
 
     def update(self):
         ret1, frame1 = self.cap1.read()
+        ret2, frame2 = self.cap2.read()
         if ret1:
             # Display the video flux
             # frame1 = cv2.cvtColor(frame1, self.colorfish)
+            if self.seeresult and ret2:
+                overlay , imgR= project_image(frame1,frame2)
+                frame1 = cv2.addWeighted(overlay, self.opacity, imgR, 1 - self.opacity, 0)
+            if self.undist:
+                frame1=undistort(frame1)
             rgbImage1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
             h1, w1, ch1 = rgbImage1.shape
             bytesPerLine1 = ch1 * w1
@@ -69,7 +102,7 @@ class MainWindow(QWidget):
             pixmap1 = QPixmap.fromImage(qImg1)
             self.label1.setPixmap(pixmap1.scaled(720, 540))
 
-        ret2, frame2 = self.cap2.read()
+
         if ret2:
 
             rgbImage2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
@@ -84,21 +117,52 @@ class MainWindow(QWidget):
         ret1, img = self.cap1.read()
         ret2, img2 = self.cap2.read() 
         if ret1 and ret2:
-            cv2.imwrite('calibration/img_calib/img_fisheye4/imageFISH' + str(self.num) + '.png', img)
-            cv2.imwrite('calibration/img_calib/img_infra4/imageINF'+ str(self.num) + '.png', img2)
+            cv2.imwrite('calibration/img_calib/img_fisheye_stereo/imageFISH' + str(self.num) + '.png', img)
+            cv2.imwrite('calibration/img_calib/img_infra_stereo/imageINF'+ str(self.num) + '.png', img2)
             print("images saved!")
-            self.num +=1
+            self.num_stereo +=1
             
-    def clean_file(self):
-        cleanfile('calibration/img_calib/img_fisheye4/')
-        cleanfile('calibration/img_calib/img_infra4/')
-        
-    def mono(self):
-        if self.colorfish == cv2.COLOR_BGR2GRAY:
-                self.colorfish=cv2.COLOR_BGR2RGB
-        else:
-                self.colorfish=cv2.COLOR_BGR2GRAY
+    def capture_image_fish(self):
+        ret1, img = self.cap1.read()
+        if ret1 :
+            cv2.imwrite('calibration/img_calib/img_fisheye_indi/imageFISH' + str(self.num) + '.jpg', img)
+            print("images saved!")
+            self.num_fish +=1
 
+    def clean_file_stereo(self):
+        cleanfile('calibration/img_calib/img_fisheye_stereo/')
+        cleanfile('calibration/img_calib/img_infra_stereo/')
+
+
+    def clean_file_fish(self):
+        cleanfile('calibration/img_calib/img_fisheye_indi/')
+    
+    def select_fish(self):
+        pass
+
+    def select_stereo(self):
+        pass
+
+    def see_unidst(self):
+        if self.undist:
+            self.undist=False
+        else:
+            self.undist=True
+    
+    def exec_fishcalib(self):
+        calib_fish(chessboardSize = (8,6))
+
+
+    def exec_stereocalib(self):
+        calibrate_camera(chessboardSize = (8,6))
+
+        
+    def see_result(self):
+        if self.seeresult:
+            self.seeresult=False
+        else:
+            self.seeresult=True
+    
 
 
 if __name__ == '__main__':

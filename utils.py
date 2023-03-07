@@ -3,6 +3,12 @@ import os, shutil
 def cleanfile(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
+        delete_pic(file_path)
+
+
+
+
+def delete_pic(file_path):
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)

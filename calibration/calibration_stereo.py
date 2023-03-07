@@ -4,7 +4,6 @@ import glob
 from calibration.undistort import undistort
 
 
-
 def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"):
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 
@@ -28,12 +27,9 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
     imgpointsL = [] # 2d points in image plane.
     imgpointsR = [] # 2d points in image plane.
 
-    imagesRight = sorted(glob.glob(img_calib_dir+'/others/img_fisheye/*.png'))
-    imagesLeft = sorted(glob.glob(img_calib_dir+'/others/img_infra/*.png'))
+    imagesRight = sorted(glob.glob(img_calib_dir+'/img_fisheye_stereo/*.png'))
+    imagesLeft = sorted(glob.glob(img_calib_dir+'/img_infra_stereo/*.png'))
 
-
-    imagesRight += sorted(glob.glob(img_calib_dir+'/others/img_fisheye2/*.png'))
-    imagesLeft += sorted(glob.glob(img_calib_dir+'/others/img_infra2/*.png'))
 
 
 
@@ -42,15 +38,14 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
     print(f" Number of base images :{len(imagesLeft)}")
 
     counter=0
-    i=0
     for imgLeft, imgRight in zip(imagesLeft, imagesRight):
 
     
-        imgRight= cv.imread(imgRight)
-        imgR = undistort(imgRight)
+        imgR= cv.imread(imgRight)
+        imgR = undistort(imgR)
         
-        imgLeft = cv.imread(imgLeft)
-        imgL = cv.rotate(imgLeft, cv.ROTATE_180)
+        imgL = cv.imread(imgLeft)
+        imgL = cv.rotate(imgL, cv.ROTATE_180)
 
         grayR = cv.cvtColor(imgR, cv.COLOR_BGR2GRAY)
         grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
@@ -60,10 +55,8 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
         retR, cornersR = cv.findChessboardCorners(grayR, chessboardSize, None)
 
         # If found, add object points, image points (after refining them)
-
-        manual_remove = [21,23,33,38,39,40,45,49,52,70,81,85,86,87,97]
-        if retL and retR == True and i not in manual_remove:
-
+        
+        if retL and retR == True :
 
             objpoints.append(objp)
 
@@ -82,14 +75,11 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
             # cv.imwrite(f'draw/infra/imgINF{counter}.png',imgR)
             # cv.waitKey(50)
             counter+=1
-        i+=1
         # else:
         #     print("NOt ok retL and retR")
         #     print(imgLeft,imgRight)
 
     cv.destroyAllWindows()
-
-
 
     print(f" Number of used images :{len(objpoints)}")
 
