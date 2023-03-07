@@ -6,8 +6,6 @@ def cleanfile(folder):
         delete_pic(file_path)
 
 
-
-
 def delete_pic(file_path):
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):

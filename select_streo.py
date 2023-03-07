@@ -5,6 +5,9 @@ from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer
 from utils import cleanfile,delete_pic
 import glob
+from calibration.undistort import undistort
+
+
 from main import MainWindow
 class StereoWindow(QWidget):
     def __init__(self):
@@ -16,7 +19,7 @@ class StereoWindow(QWidget):
 
         self.deleteRight=[]
         self.deleteLeft=[]
-
+        self.overlayDelete = cv2.imread('deleted.png')
 
     def initUI(self):
         # Create a layout for the buttons on the left
@@ -69,16 +72,39 @@ class StereoWindow(QWidget):
         frame1 = cv2.imread(self.imagesRight[self.num])
         frame2 = cv2.imread(self.imagesLeft[self.num])
 
-        rgbImage1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+        
+
+        chessboardSize=(8,6)
+
+        imgR = undistort(frame1)
+        imgL = cv2.rotate(frame2, cv2.ROTATE_180)
+
+        grayR = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)
+        grayL = cv2.cvtColor(imgL, cv2.COLOR_BGR2GRAY)
+
+        # Find the chess board corners
+        retL, cornersL = cv2.findChessboardCorners(grayL, chessboardSize, None)
+        retR, cornersR = cv2.findChessboardCorners(grayR, chessboardSize, None)
+
+        # If found, add object points, image points (after refining them)
+        
+        if retL and retR == True :
+            cv2.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
+            cv2.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
+
+        if self.imagesRight[self.num] in self.deleteRight:
+            opacity = 0.4
+            imgR = cv2.addWeighted(self.overlayDelete, opacity, imgR, 1 - opacity, 0)
+            imgL = cv2.addWeighted(self.overlayDelete, opacity, imgL, 1 - opacity, 0)
+
+        rgbImage1 = cv2.cvtColor(imgR, cv2.COLOR_BGR2RGB)
         h1, w1, ch1 = rgbImage1.shape
         bytesPerLine1 = ch1 * w1
         qImg1 = QImage(rgbImage1.data, w1, h1, bytesPerLine1, QImage.Format_RGB888)
         pixmap1 = QPixmap.fromImage(qImg1)
         self.label1.setPixmap(pixmap1.scaled(360, 270))
 
-
-
-        rgbImage2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
+        rgbImage2 = cv2.cvtColor(imgL, cv2.COLOR_BGR2RGB)
         h2, w2, ch2 = rgbImage2.shape
         bytesPerLine2 = ch2 * w2
         qImg2 = QImage(rgbImage2.data, w2, h2, bytesPerLine2, QImage.Format_RGB888)
