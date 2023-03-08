@@ -8,7 +8,6 @@ import glob
 from calibration.undistort import undistort
 
 
-from main import MainWindow
 class StereoWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -110,15 +109,15 @@ class StereoWindow(QWidget):
 
     def previous(self):
         if self.num != 0:
-            self.num+=1
-    def next(self):
-        if self.num != len(self.imagesRight):
             self.num-=1
+    def next(self):
+        if self.num != len(self.imagesRight)-1:
+            self.num+=1
     def delete(self):
         if self.imagesRight[self.num] not in self.deleteRight:
             self.deleteRight.append(self.imagesRight[self.num])
             self.deleteLeft.append(self.imagesLeft[self.num])
-    def remove(self):
+    def undo(self):
         if self.imagesRight[self.num] in self.deleteRight:
             self.deleteRight.remove(self.imagesRight[self.num])
             self.deleteLeft.remove(self.imagesLeft[self.num])
@@ -127,14 +126,13 @@ class StereoWindow(QWidget):
         for right,left in zip(self.deleteRight,self.deleteLeft):
             delete_pic(right)
             delete_pic(left)
-        main = MainWindow()
-        main.show()
+        self.close()
 
     
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = MainWindow()
+    win = StereoWindow()
     win.show()
     sys.exit(app.exec_())

@@ -1,14 +1,15 @@
 import sys
 import cv2
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QSlider
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer,Qt
 from utils import cleanfile,delete_pic
 from calibration.undistort import undistort
 from calibration.project_image import project_image
 from calibration.calibration_stereo import calibrate_camera
 from calibration.calib_fish import calib_fish
-
+from select_stereo import StereoWindow
+from select_fish import FishWindow
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -17,7 +18,12 @@ class MainWindow(QWidget):
         self.num_fish = 0
         self.undist=False
         self.seeresult=False
-        self.opacity = 0.4
+        #self.opacity = 0.4
+        self.overlay = []
+        self.overlayall =[]
+        self.overlaycorners = []
+        self.overlayborders = []
+        self.numoverlay = 0
 
 
     def initUI(self):
@@ -46,6 +52,11 @@ class MainWindow(QWidget):
         button9 = QPushButton('Stereo - See result')
         button9.clicked.connect(self.see_result)
 
+
+        self.sl = QSlider(Qt.Horizontal)
+        self.sl.setMinimum(0)
+        self.sl.setMaximum(100)
+        self.sl.setValue(40)
         vbox1.addWidget(button0)
         vbox1.addWidget(button1)
         vbox1.addWidget(button2)
@@ -57,6 +68,7 @@ class MainWindow(QWidget):
         vbox1.addWidget(button7)
         vbox1.addWidget(button8)
         vbox1.addWidget(button9)
+        vbox1.addWidget(self.sl)
 
 
         # Create a layout for the video flux spaces
@@ -85,14 +97,15 @@ class MainWindow(QWidget):
 
 
     def update(self):
+        self.opacity = self.sl.value()/100
         ret1, frame1 = self.cap1.read()
         ret2, frame2 = self.cap2.read()
         if ret1:
             # Display the video flux
             # frame1 = cv2.cvtColor(frame1, self.colorfish)
-            if self.seeresult and ret2:
-                overlay , imgR= project_image(frame1,frame2)
-                frame1 = cv2.addWeighted(overlay, self.opacity, imgR, 1 - self.opacity, 0)
+            if self.numoverlay != 0 and ret2:
+                frame1=undistort(frame1)
+                frame1 = cv2.addWeighted(self.overlay, self.opacity, frame1, 1 - self.opacity, 0)
             if self.undist:
                 frame1=undistort(frame1)
             rgbImage1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
@@ -138,10 +151,13 @@ class MainWindow(QWidget):
         cleanfile('calibration/img_calib/img_fisheye_indi/')
     
     def select_fish(self):
-        pass
+        self.fishW = FishWindow()
+        self.fishW.show()
 
     def select_stereo(self):
-        pass
+        self.stereoW = StereoWindow()
+        self.stereoW.show()
+        
 
     def see_unidst(self):
         if self.undist:
@@ -158,11 +174,27 @@ class MainWindow(QWidget):
 
         
     def see_result(self):
-        if self.seeresult:
-            self.seeresult=False
-        else:
-            self.seeresult=True
-    
+        if self.numoverlay == 0:
+            ret1, frame1 = self.cap1.read()
+            ret2, frame2 = self.cap2.read()
+            self.overlayall ,self.overlaycorners,self.overlayborders, coord_corner= project_image(frame1,frame2)
+            self.overlay = self.overlayall
+            self.numoverlay = 1
+            
+        elif self.numoverlay == 1:
+            self.overlay = self.overlayborders
+            self.numoverlay = 2
+            
+        elif self.numoverlay == 2:
+            self.overlay = self.overlaycorners
+            self.numoverlay = 3
+            
+
+        elif self.numoverlay == 3:
+            self.numoverlay = 0
+            
+
+
 
 
 if __name__ == '__main__':

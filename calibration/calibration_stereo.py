@@ -79,7 +79,7 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
         #     print("NOt ok retL and retR")
         #     print(imgLeft,imgRight)
 
-    cv.destroyAllWindows()
+    #cv.destroyAllWindows()
 
     print(f" Number of used images :{len(objpoints)}")
 

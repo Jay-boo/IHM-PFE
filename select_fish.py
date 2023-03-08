@@ -8,15 +8,15 @@ import glob
 from calibration.undistort import undistort
 
 
-from main import MainWindow
-class StereoWindow(QWidget):
+class FishWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
         self.num = 0
-        self.imagesFish = sorted(glob.glob('calibration/img_calib/img_fisheye_stereo/*.png'))
+        self.imagesFish = sorted(glob.glob('calibration/img_calib/img_fisheye_indi/*.jpg'))
         self.deleteFish=[]
         self.overlayDelete = cv2.imread('deleted.png')
+        
 
     def initUI(self):
         # Create a layout for the buttons on the left
@@ -93,28 +93,27 @@ class StereoWindow(QWidget):
 
     def previous(self):
         if self.num != 0:
-            self.num+=1
-    def next(self):
-        if self.num != len(self.imagesFish):
             self.num-=1
+    def next(self):
+        if self.num != len(self.imagesFish)-1:
+            self.num+=1
     def delete(self):
         if self.imagesFish[self.num] not in self.deleteFish:
-            self.deleteRight.append(self.imagesFish[self.num])
-    def remove(self):
+            self.deleteFish.append(self.imagesFish[self.num])
+    def undo(self):
         if self.imagesFish[self.num] in self.deleteFish:
-            self.deleteRight.remove(self.imagesFish[self.num])
+            self.deleteFish.remove(self.imagesFish[self.num])
         
     def validate(self):
         for right in self.deleteFish:
             delete_pic(right)
-        main = MainWindow()
-        main.show()
+        self.close()
 
     
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = MainWindow()
+    win = FishWindow()
     win.show()
     sys.exit(app.exec_())

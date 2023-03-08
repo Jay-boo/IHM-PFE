@@ -45,12 +45,12 @@ def calib_fish(chessboardSize = (8,6),img_calib_dir="calibration/img_calib/"):
             imgpoints.append(corners)
             # Draw and display the corners
             cv.drawChessboardCorners(img, chessboardSize, corners, ret)
-            cv.imshow('img left', img)
+            #cv.imshow('img left', img)
 
-            cv.waitKey(200)
+            #cv.waitKey(200)
 
 
-    cv.destroyAllWindows()
+    #cv.destroyAllWindows()
 
     #print(rms)
     calibration_flags = cv.fisheye.CALIB_RECOMPUTE_EXTRINSIC+cv.fisheye.CALIB_FIX_SKEW #+ cv.fisheye.CALIB_CHECK_COND
