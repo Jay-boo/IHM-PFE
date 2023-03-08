@@ -57,7 +57,7 @@ class StereoWindow(QWidget):
 
         self.setLayout(hbox1)
         self.setGeometry(100, 100, 800, 600)
-        self.setWindowTitle('PyQt with OpenCV video flux spaces')
+        self.setWindowTitle('Pictures selection for stereo calibration')
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update)
