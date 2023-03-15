@@ -116,26 +116,20 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
         total_points = 0
 
         for i, objpoints in enumerate(objectpoints):
-            print(f"-------------------- {i} ----------")
             # calculate world <-> cam1 transformation
             _, rvec_l, tvec_l,_ = cv.solvePnPRansac(objpoints, imgpoints_l[i], A1, D1)
 
             # compute reprojection error for cam1
             rp_l, _ = cv.projectPoints(objpoints, rvec_l, tvec_l, A1, D1)
-            print("fisheye reprojection error")
-            print(np.sum(np.square(np.float64(imgpoints_l[i] - rp_l))))
             tot_error += np.sum(np.square(np.float64(imgpoints_l[i] - rp_l)))
             total_points += len(objpoints)
 
             # calculate world <-> cam2 transformation
-            # rvec_r, tvec_r  = cv.composeRT(rvec_l,tvec_l,cv.Rodrigues(R)[0],T)[:2]
-            _, rvec_r, tvec_r,_ = cv.solvePnPRansac(objpoints, imgpoints_r[i], A2, D2)
+            rvec_r, tvec_r  = cv.composeRT(rvec_l,tvec_l,cv.Rodrigues(R)[0],T)[:2]
 
             # compute reprojection error for cam2
             rp_r,_ = cv.projectPoints(objpoints, rvec_r, tvec_r, A2, D2)
             tot_error += np.square(imgpoints_r[i] - rp_r).sum()
-            print("infra reprojection error square")
-            print(np.square(imgpoints_r[i] - rp_r).sum())
             total_points += len(objpoints)
 
         mean_error = np.sqrt(tot_error/total_points)

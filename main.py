@@ -192,7 +192,7 @@ class MainWindow(QWidget):
         res_1,retStereo = calibrate_camera(chessboardSize = (8,6))
         msg = QMessageBox(win)
         msg.setWindowTitle("Stereo calibration")
-        msg.setText(f"Stereo calibration ended with a RMSE = {res_1} ")
+        msg.setText(f"Stereo calibration ended with a RMSE = {retStereo} (custom rmse = {res_1})")
          
         msg.exec_()
 
