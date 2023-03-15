@@ -90,6 +90,7 @@ def calib_fish(chessboardSize = (8,6),img_calib_dir="calibration/img_calib/"):
     # for fname in imagesFISH:
     #     undistort(fname)
     #     i+=1
+    return rms
 
 if __name__ == "__main__":
     

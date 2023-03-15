@@ -187,6 +187,8 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
     cv_file.write('cameraMatrixR',cameraMatrixR)
     cv_file.write('distR',distR)
     cv_file.release()
+    
+    return res_1,retStereo
 
 if __name__ == "__main__":
     

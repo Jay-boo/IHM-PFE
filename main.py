@@ -1,6 +1,6 @@
 import sys
 import cv2
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QSlider
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QSlider, QMessageBox
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer,Qt
 from utils import cleanfile,delete_pic
@@ -52,24 +52,37 @@ class MainWindow(QWidget):
         button9 = QPushButton('Stereo - See result')
         button9.clicked.connect(self.see_result)
 
+        self.bal = QSlider(Qt.Horizontal)
+        self.bal.setMinimum(0)
+        self.bal.setMaximum(100)
+        self.bal.setValue(0)
+        self.bal_text = QLabel("Balance")
 
         self.sl = QSlider(Qt.Horizontal)
         self.sl.setMinimum(0)
         self.sl.setMaximum(100)
         self.sl.setValue(40)
+        self.opa = QLabel("Opacity")
+        
         vbox1.addWidget(button0)
         vbox1.addWidget(button1)
         vbox1.addWidget(button2)
         vbox1.addWidget(button3)
         vbox1.addWidget(button4)
+        hbox4 = QHBoxLayout()
+        hbox4.addWidget(self.bal_text)
+        hbox4.addWidget(self.bal)
+        vbox1.addLayout(hbox4)
 
         vbox1.addWidget(button5)
         vbox1.addWidget(button6)
         vbox1.addWidget(button7)
         vbox1.addWidget(button8)
         vbox1.addWidget(button9)
-        vbox1.addWidget(self.sl)
-
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.opa)
+        hbox3.addWidget(self.sl)
+        vbox1.addLayout(hbox3)
 
         # Create a layout for the video flux spaces
         hbox2 = QHBoxLayout()
@@ -98,6 +111,7 @@ class MainWindow(QWidget):
 
     def update(self):
         self.opacity = self.sl.value()/100
+        self.balance = self.bal.value()/100
         ret1, frame1 = self.cap1.read()
         ret2, frame2 = self.cap2.read()
         if ret1:
@@ -106,8 +120,8 @@ class MainWindow(QWidget):
             if self.numoverlay != 0 and ret2:
                 frame1=undistort(frame1)
                 frame1 = cv2.addWeighted(self.overlay, self.opacity, frame1, 1 - self.opacity, 0)
-            if self.undist:
-                frame1=undistort(frame1)
+            if self.undist and self.numoverlay == 0:
+                frame1=undistort(frame1, balance=self.balance)
             rgbImage1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
             h1, w1, ch1 = rgbImage1.shape
             bytesPerLine1 = ch1 * w1
@@ -166,11 +180,21 @@ class MainWindow(QWidget):
             self.undist=True
     
     def exec_fishcalib(self):
-        calib_fish(chessboardSize = (8,6))
+        rms = calib_fish(chessboardSize = (8,6))
+        msg = QMessageBox(win)
+        msg.setWindowTitle("Fish calibration")
+        msg.setText(f"Fish calibration ended with a RMSE = {rms}")
+         
+        msg.exec_()
 
 
     def exec_stereocalib(self):
-        calibrate_camera(chessboardSize = (8,6))
+        res_1,retStereo = calibrate_camera(chessboardSize = (8,6))
+        msg = QMessageBox(win)
+        msg.setWindowTitle("Stereo calibration")
+        msg.setText(f"Stereo calibration ended with a RMSE = {res_1} ")
+         
+        msg.exec_()
 
         
     def see_result(self):
@@ -189,7 +213,6 @@ class MainWindow(QWidget):
             self.overlay = self.overlaycorners
             self.numoverlay = 3
             
-
         elif self.numoverlay == 3:
             self.numoverlay = 0
             
