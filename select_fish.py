@@ -16,6 +16,7 @@ class FishWindow(QWidget):
         self.imagesFish = sorted(glob.glob('calibration/img_calib/img_fisheye_indi/*.jpg'))
         self.deleteFish=[]
         self.overlayDelete = cv2.imread('deleted.png')
+        self.upd=1
         
 
     def initUI(self):
@@ -64,45 +65,51 @@ class FishWindow(QWidget):
 
 
     def update(self):
-        frame1 = cv2.imread(self.imagesFish[self.num])
+        if self.upd == 1 :
+           frame1 = cv2.imread(self.imagesFish[self.num])
 
-        chessboardSize=(8,6)
+           chessboardSize=(8,6)
 
-        imgR = undistort(frame1)
+           self.imgR = undistort(frame1)
 
-        grayR = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)
+           grayR = cv2.cvtColor(self.imgR, cv2.COLOR_BGR2GRAY)
 
         # Find the chess board corners
-        retR, cornersR = cv2.findChessboardCorners(grayR, chessboardSize, None)
+           retR, cornersR = cv2.findChessboardCorners(grayR, chessboardSize, None)
 
         # If found, add object points, image points (after refining them)
         
-        if retR == True :
-            cv2.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
+           if retR == True :
+               cv2.drawChessboardCorners(self.imgR, chessboardSize, cornersR, retR)
 
-        if self.imagesFish[self.num] in self.deleteFish:
-            opacity = 0.4
-            imgR = cv2.addWeighted(self.overlayDelete, opacity, imgR, 1 - opacity, 0)
+           if self.imagesFish[self.num] in self.deleteFish:
+               opacity = 0.4
+               self.imgR = cv2.addWeighted(self.overlayDelete, opacity, self.imgR, 1 - opacity, 0)
 
-        rgbImage1 = cv2.cvtColor(imgR, cv2.COLOR_BGR2RGB)
+        rgbImage1 = cv2.cvtColor(self.imgR, cv2.COLOR_BGR2RGB)
         h1, w1, ch1 = rgbImage1.shape
         bytesPerLine1 = ch1 * w1
         qImg1 = QImage(rgbImage1.data, w1, h1, bytesPerLine1, QImage.Format_RGB888)
         pixmap1 = QPixmap.fromImage(qImg1)
         self.label1.setPixmap(pixmap1.scaled(360, 270))
+        self.upd = 0 
 
     def previous(self):
         if self.num != 0:
             self.num-=1
+        self.upd = 1
     def next(self):
         if self.num != len(self.imagesFish)-1:
             self.num+=1
+        self.upd = 1
     def delete(self):
         if self.imagesFish[self.num] not in self.deleteFish:
             self.deleteFish.append(self.imagesFish[self.num])
+        self.upd=1
     def undo(self):
         if self.imagesFish[self.num] in self.deleteFish:
             self.deleteFish.remove(self.imagesFish[self.num])
+        self.upd=1
         
     def validate(self):
         for right in self.deleteFish:

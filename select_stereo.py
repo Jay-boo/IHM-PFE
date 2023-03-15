@@ -19,6 +19,7 @@ class StereoWindow(QWidget):
         self.deleteRight=[]
         self.deleteLeft=[]
         self.overlayDelete = cv2.imread('deleted.png')
+        self.upd=1
 
     def initUI(self):
         # Create a layout for the buttons on the left
@@ -65,62 +66,69 @@ class StereoWindow(QWidget):
 
 
     def update(self):
-        frame1 = cv2.imread(self.imagesRight[self.num])
-        frame2 = cv2.imread(self.imagesLeft[self.num])
+        if self.upd == 1:
+           frame1 = cv2.imread(self.imagesRight[self.num])
+           frame2 = cv2.imread(self.imagesLeft[self.num])
 
         
 
-        chessboardSize=(8,6)
+           chessboardSize=(8,6)
 
-        imgR = undistort(frame1)
-        imgL = cv2.rotate(frame2, cv2.ROTATE_180)
+           self.imgR = undistort(frame1)
+           self.imgL = cv2.rotate(frame2, cv2.ROTATE_180)
 
-        grayR = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)
-        grayL = cv2.cvtColor(imgL, cv2.COLOR_BGR2GRAY)
+           grayR = cv2.cvtColor(self.imgR, cv2.COLOR_BGR2GRAY)
+           grayL = cv2.cvtColor(self.imgL, cv2.COLOR_BGR2GRAY)
 
         # Find the chess board corners
-        retL, cornersL = cv2.findChessboardCorners(grayL, chessboardSize, None)
-        retR, cornersR = cv2.findChessboardCorners(grayR, chessboardSize, None)
+           retL, cornersL = cv2.findChessboardCorners(grayL, chessboardSize, None)
+           retR, cornersR = cv2.findChessboardCorners(grayR, chessboardSize, None)
 
         # If found, add object points, image points (after refining them)
         
-        if retL and retR == True :
-            cv2.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
-            cv2.drawChessboardCorners(imgR, chessboardSize, cornersR, retR)
+           if retL and retR == True :
+               cv2.drawChessboardCorners(self.imgL, chessboardSize, cornersL, retL)
+               cv2.drawChessboardCorners(self.imgR, chessboardSize, cornersR, retR)
 
-        if self.imagesRight[self.num] in self.deleteRight:
-            opacity = 0.4
-            imgR = cv2.addWeighted(self.overlayDelete, opacity, imgR, 1 - opacity, 0)
-            imgL = cv2.addWeighted(self.overlayDelete, opacity, imgL, 1 - opacity, 0)
+           if self.imagesRight[self.num] in self.deleteRight:
+               opacity = 0.4
+               self.imgR = cv2.addWeighted(self.overlayDelete, opacity, self.imgR, 1 - opacity, 0)
+               self.imgL = cv2.addWeighted(self.overlayDelete, opacity, self.imgL, 1 - opacity, 0)
 
-        rgbImage1 = cv2.cvtColor(imgR, cv2.COLOR_BGR2RGB)
+        rgbImage1 = cv2.cvtColor(self.imgR, cv2.COLOR_BGR2RGB)
         h1, w1, ch1 = rgbImage1.shape
         bytesPerLine1 = ch1 * w1
         qImg1 = QImage(rgbImage1.data, w1, h1, bytesPerLine1, QImage.Format_RGB888)
         pixmap1 = QPixmap.fromImage(qImg1)
         self.label1.setPixmap(pixmap1.scaled(360, 270))
 
-        rgbImage2 = cv2.cvtColor(imgL, cv2.COLOR_BGR2RGB)
+        rgbImage2 = cv2.cvtColor(self.imgL, cv2.COLOR_BGR2RGB)
         h2, w2, ch2 = rgbImage2.shape
         bytesPerLine2 = ch2 * w2
         qImg2 = QImage(rgbImage2.data, w2, h2, bytesPerLine2, QImage.Format_RGB888)
         pixmap2 = QPixmap.fromImage(qImg2)
         self.label2.setPixmap(pixmap2.scaled(360, 270))
+        
+        self.upd=0
 
     def previous(self):
         if self.num != 0:
             self.num-=1
+        self.upd=1
     def next(self):
         if self.num != len(self.imagesRight)-1:
             self.num+=1
+        self.upd=1
     def delete(self):
         if self.imagesRight[self.num] not in self.deleteRight:
             self.deleteRight.append(self.imagesRight[self.num])
             self.deleteLeft.append(self.imagesLeft[self.num])
+        self.upd=1
     def undo(self):
         if self.imagesRight[self.num] in self.deleteRight:
             self.deleteRight.remove(self.imagesRight[self.num])
             self.deleteLeft.remove(self.imagesLeft[self.num])
+        self.upd=1
         
     def validate(self):
         for right,left in zip(self.deleteRight,self.deleteLeft):
