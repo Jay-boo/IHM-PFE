@@ -88,10 +88,11 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
     retL, cameraMatrixL, distL, rvecsL, tvecsL = cv.calibrateCamera(objpoints, imgpointsL, frameSize, None, None)
     heightL, widthL, channelsL = imgL.shape
     newCameraMatrixL, roi_L = cv.getOptimalNewCameraMatrix(cameraMatrixL, distL, (widthL, heightL), 1, (widthL, heightL))
-
+    rms_infra= retL
     retR, cameraMatrixR, distR, rvecsR, tvecsR = cv.calibrateCamera(objpoints, imgpointsR, frameSize, None, None)
     heightR, widthR, channelsR = imgR.shape
     newCameraMatrixR, roi_R = cv.getOptimalNewCameraMatrix(cameraMatrixR, distR, (widthR, heightR), 1, (widthR, heightR))
+    rms_fish= retR
     print('-------------------individual cam calib')
     print("FISHEYE")
     print(retL)
@@ -182,7 +183,7 @@ def calibrate_camera(chessboardSize=(8,6),img_calib_dir="calibration/img_calib/"
     cv_file.write('distR',distR)
     cv_file.release()
     
-    return res_1,retStereo
+    return res_1,retStereo,rms_infra,rms_fish
 
 if __name__ == "__main__":
     

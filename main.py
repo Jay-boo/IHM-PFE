@@ -189,10 +189,10 @@ class MainWindow(QWidget):
 
 
     def exec_stereocalib(self):
-        res_1,retStereo = calibrate_camera(chessboardSize = (8,6))
+        res_1,retStereo,rms_infra,rms_fish = calibrate_camera(chessboardSize = (8,6))
         msg = QMessageBox(win)
         msg.setWindowTitle("Stereo calibration")
-        msg.setText(f"Stereo calibration ended with a RMSE = {retStereo} (custom rmse = {res_1})")
+        msg.setText(f"Stereo calibration ended with a RMSE = {retStereo} (custom rmse = {res_1}) \n RMSE Infrared camera = {rms_infra} ")
          
         msg.exec_()
 
